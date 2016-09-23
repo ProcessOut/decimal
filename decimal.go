@@ -43,8 +43,8 @@ import (
 //
 var DivisionPrecision = 16
 
-// Set this to true if you want the decimal to be JSON marshaled as a number,
-// instead of as a string.
+// MarshalJSONWithoutQuotes determines if the number should be marshalled as
+// a number instead of as a string.
 // WARNING: this is dangerous for decimals with many digits, since many JSON
 // unmarshallers (ex: Javascript's) will unmarshal JSON numbers to IEEE 754
 // double-precision floating point numbers, which means you can potentially
