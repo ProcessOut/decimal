@@ -345,11 +345,11 @@ func (d Decimal) Rat() *big.Rat {
 		// NOTE(vadim): must negate after casting to prevent int32 overflow
 		denom := new(big.Int).Exp(tenInt, big.NewInt(-int64(d.exp)), nil)
 		return new(big.Rat).SetFrac(d.value, denom)
-	} else {
-		mul := new(big.Int).Exp(tenInt, big.NewInt(int64(d.exp)), nil)
-		num := new(big.Int).Mul(d.value, mul)
-		return new(big.Rat).SetFrac(num, oneInt)
 	}
+
+	mul := new(big.Int).Exp(tenInt, big.NewInt(int64(d.exp)), nil)
+	num := new(big.Int).Mul(d.value, mul)
+	return new(big.Rat).SetFrac(num, oneInt)
 }
 
 // Float64 returns the nearest float64 value for d and a bool indicating
@@ -414,7 +414,7 @@ func (d Decimal) Round(places int32) Decimal {
 
 	// floor for positive numbers, ceil for negative numbers
 	_, m := ret.value.DivMod(ret.value, tenInt, new(big.Int))
-	ret.exp += 1
+	ret.exp++
 	if ret.value.Sign() < 0 && m.Cmp(zeroInt) != 0 {
 		ret.value.Add(ret.value, oneInt)
 	}
@@ -545,12 +545,6 @@ func (d Decimal) MarshalText() (text []byte, err error) {
 	return []byte(d.String()), nil
 }
 
-// NOTE: buggy, unintuitive, and DEPRECATED! Use StringFixed instead.
-// StringScaled first scales the decimal then calls .String() on it.
-func (d Decimal) StringScaled(exp int32) string {
-	return d.rescale(exp).String()
-}
-
 func (d Decimal) string(trimTrailingZeros bool) string {
 	if d.exp >= 0 {
 		return d.rescale(0).value.String()
@@ -602,7 +596,7 @@ func (d *Decimal) ensureInitialized() {
 	}
 }
 
-// Returns the smallest Decimal that was passed in the arguments.
+// Min returns the smallest Decimal that was passed in the arguments.
 //
 // To call this function with an array, you must do:
 //
@@ -619,7 +613,7 @@ func Min(first Decimal, rest ...Decimal) Decimal {
 	return ans
 }
 
-// Returns the largest Decimal that was passed in the arguments.
+// Max returns the largest Decimal that was passed in the arguments.
 //
 // To call this function with an array, you must do:
 //
