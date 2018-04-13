@@ -344,9 +344,9 @@ func (d Decimal) Exponent() int32 {
 func (d Decimal) Coefficient() *big.Int {
 	// we copy the coefficient so that mutating the result does not mutate the
 	// Decimal.
+	d.ensureInitialized()
 	return big.NewInt(0).Set(d.value)
 }
-
 
 // IntPart returns the integer component of the decimal.
 func (d Decimal) IntPart() int64 {
